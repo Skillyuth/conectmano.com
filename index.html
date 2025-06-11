@@ -106,6 +106,32 @@
       object-fit: cover;
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
+    .livechat-box {
+      border: 1px solid #ccc;
+      padding: 10px;
+      height: 300px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      background: #f9f9f9;
+    }
+    .livechat-input {
+      display: flex;
+      gap: 10px;
+    }
+    .livechat-input input {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+    }
+    .livechat-input button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -115,12 +141,13 @@
 </header>
 
 <div class="hero">
-  <img src="https://source.unsplash.com/800x200/?tech,friendship" alt="Banner" />
+  <img src="https://i.ibb.co/m5x0jR4b/Entrepreneur-Graphic-01.jpg" alt="Banner" />
 </div>
 
 <div class="tabs">
   <button onclick="showTab('fileTab')" class="active">📁 File Share</button>
   <button onclick="showTab('inquiryTab')">📨 Inquiry</button>
+  <button onclick="showTab('livechatTab')">💬 Live Chat</button>
   <button onclick="showTab('profileTab')">👤 Profile</button>
 </div>
 
@@ -144,6 +171,17 @@
     <textarea name="message" placeholder="Your Message"></textarea>
     <button type="submit">Send Inquiry</button>
   </form>
+</div>
+
+<div id="livechatTab" class="tab-content">
+  <h3>Live Chat with Mano</h3>
+  <div class="livechat-box" id="chatBox">
+    <div><strong>Mano:</strong> Hello! 👋 How can I help you today?</div>
+  </div>
+  <div class="livechat-input">
+    <input type="text" id="chatInput" placeholder="Type your message...">
+    <button onclick="sendChat()">Send</button>
+  </div>
 </div>
 
 <div id="profileTab" class="tab-content">
@@ -220,6 +258,24 @@
       document.getElementById("message").innerText = "❌ Inquiry failed.";
     }
   });
+
+  function sendChat() {
+    const chatBox = document.getElementById('chatBox');
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    if (!message) return;
+    const userMessage = document.createElement('div');
+    userMessage.innerHTML = `<strong>You:</strong> ${message}`;
+    chatBox.appendChild(userMessage);
+    input.value = '';
+    chatBox.scrollTop = chatBox.scrollHeight;
+    setTimeout(() => {
+      const botMessage = document.createElement('div');
+      botMessage.innerHTML = `<strong>Mano:</strong> Thanks for your message! I’ll get back to you soon.`;
+      chatBox.appendChild(botMessage);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }, 800);
+  }
 </script>
 
 </body>
