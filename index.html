@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Friend Uploader</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    header {
+      background: #222;
+      color: white;
+      text-align: center;
+      padding: 1em;
+    }
+    .hero {
+      width: 100%;
+      height: 180px;
+      overflow: hidden;
+    }
+    .hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      animation: slide 10s infinite;
+    }
+    @keyframes slide {
+      0%, 100% { opacity: 1; }
+      33% { opacity: 0; }
+      66% { opacity: 1; }
+    }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      background: #007bff;
+    }
+    .tabs button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      background: #007bff;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .tabs button.active {
+      background: #0056b3;
+    }
+    .tab-content {
+      display: none;
+      padding: 15px;
+      margin: 15px auto;
+      max-width: 600px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .tab-content.active {
+      display: block;
+    }
+    input, textarea {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 12px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+    }
+    button[type="submit"] {
+      background: #28a745;
+      color: white;
+      font-size: 16px;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #message {
+      text-align: center;
+      font-weight: bold;
+      margin: 15px auto;
+      color: green;
+      max-width: 600px;
+    }
+    footer {
+      text-align: center;
+      font-size: 14px;
+      color: #aaa;
+      padding: 20px 10px;
+    }
+    .profile-img {
+      display: block;
+      margin: 0 auto 10px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h2>📂 Share with MANO</h2>
+</header>
+
+<div class="hero">
+  <img src="https://source.unsplash.com/800x200/?tech,friendship" alt="Banner" />
+</div>
+
+<div class="tabs">
+  <button onclick="showTab('fileTab')" class="active">📁 File Share</button>
+  <button onclick="showTab('inquiryTab')">📨 Inquiry</button>
+  <button onclick="showTab('profileTab')">👤 Profile</button>
+</div>
+
+<div id="fileTab" class="tab-content active">
+  <form id="fileForm">
+    <input type="hidden" name="type" value="file" />
+    <input type="text" name="name" placeholder="Your Name" required />
+    <input type="email" name="email" placeholder="Your Email" required />
+    <textarea name="message" placeholder="Message (optional)"></textarea>
+    <input type="file" name="file" required />
+    <button type="submit">Upload File</button>
+  </form>
+</div>
+
+<div id="inquiryTab" class="tab-content">
+  <form id="inquiryForm">
+    <input type="hidden" name="type" value="inquiry" />
+    <input type="text" name="name" placeholder="Your Name" required />
+    <input type="email" name="email" placeholder="Your Email" required />
+    <input type="text" name="phone" placeholder="Phone Number" required />
+    <textarea name="message" placeholder="Your Message"></textarea>
+    <button type="submit">Send Inquiry</button>
+  </form>
+</div>
+
+<div id="profileTab" class="tab-content">
+  <img src="https://i.ibb.co/k6GvwdBb/profile-pic.png" alt="Mano" class="profile-img" />
+  <p><strong>Name:</strong> Manohar Kumar Ray</p>
+  <p><strong>Role:</strong> Entrepreneur</p>
+  <p><strong>About:</strong> I'm on a mission to empower others using tech tools. Use this platform to send files, ask questions, or just say hello. This is your friendly bridge to reach out securely and easily. 😊</p>
+</div>
+
+<p id="message"></p>
+
+<footer>
+  © 2025 Manohar Kumar Ray • Built with ❤️ for friends
+</footer>
+
+<script>
+  const webAppURL = "https://script.google.com/macros/s/AKfycbwYZ5qxmOKLI49I6SlVCqCeC9ny-XLUxVwdZt-5dzoZMMlTUy9gS_XO8PISzebf0K2M/exec";
+
+  function showTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(div => div.classList.remove('active'));
+    document.querySelectorAll('.tabs button').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    event.target.classList.add('active');
+    document.getElementById('message').innerText = '';
+  }
+
+  document.getElementById("fileForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const file = form.file.files[0];
+    const reader = new FileReader();
+    reader.onload = async function() {
+      const base64 = reader.result.split(',')[1];
+      const formData = new URLSearchParams();
+      formData.append("type", "file");
+      formData.append("name", form.name.value);
+      formData.append("email", form.email.value);
+      formData.append("message", form.message.value);
+      formData.append("filename", file.name);
+      formData.append("filebase64", base64);
+      try {
+        const res = await fetch(webAppURL, {
+          method: "POST",
+          body: formData,
+        });
+        const text = await res.text();
+        document.getElementById("message").innerText = "✅ Thank you! Your file has been submitted.";
+        form.reset();
+      } catch (err) {
+        document.getElementById("message").innerText = "❌ Upload failed.";
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById("inquiryForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new URLSearchParams();
+    formData.append("type", "inquiry");
+    formData.append("name", form.name.value);
+    formData.append("email", form.email.value);
+    formData.append("phone", form.phone.value);
+    formData.append("message", form.message.value);
+    try {
+      const res = await fetch(webAppURL, {
+        method: "POST",
+        body: formData,
+      });
+      const text = await res.text();
+      document.getElementById("message").innerText = "✅ Thank you! Your inquiry has been sent.";
+      form.reset();
+    } catch (err) {
+      document.getElementById("message").innerText = "❌ Inquiry failed.";
+    }
+  });
+</script>
+
+</body>
+</html>
